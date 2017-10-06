@@ -1,14 +1,18 @@
 package info.boaventura.scan;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import org.springframework.shell.Bootstrap;
 
-@SpringBootApplication
+import java.io.IOException;
+
 public class Main {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Main.class, args);
+		try {
+			Bootstrap.main(args);
+		} catch (IOException e) {
+			System.err.println("Impossible starts scan console: " + e.getMessage());
+		}
 	}
 
 }
