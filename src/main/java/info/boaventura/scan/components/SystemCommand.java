@@ -9,7 +9,8 @@ import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.zip.ZipFile;
 
 @Component
@@ -34,24 +35,28 @@ public class SystemCommand implements CommandMarker {
 		}
 		if (change.exists()) {
 			MainSetting.current = change.toPath();
-			return mount();
+			return entries(null, false);
 		}
 		return "Directory " + directory.toPath().toString() + " does not exists";
 	}
 
-	private String mount() {
+	@CliCommand(value = "entries", help = "List entries currently indexed")
+	public String entries(@CliOption(key = "") String title,
+												@CliOption(key = "verbose") Boolean verbose) {
 		StringBuffer sb = new StringBuffer();
 		// Mount the result
 		sb.append(result.mount());
-		sb.append("Available Files: \n");
-		for (ZipFile entry: result.getIndexedFiles()) {
-			sb.append("- " + entry.getName());
+		sb.append("Available Files at " + MainSetting.current.toAbsolutePath() + ": \n");
+		Collection<ZipFile> files = result.getIndexedFiles();
+		for (ZipFile entry: files) {
+			sb.append("- " + MainSetting.current.relativize(Paths.get(entry.getName())).toString());
 			if (entry.getComment() != null) {
-				sb.append("/* " + entry.getComment() + " */");
+				sb.append(" /* " + entry.getComment() + " */");
 			}
 			sb.append("\n");
 		}
-		sb.append("\nDirectory changed to " + MainSetting.current.toString());
+		sb.append("\n" + files.size() + " entries available.\n");
+		sb.append("Directory changed to " + MainSetting.current.toString());
 		return sb.toString();
 	}
 

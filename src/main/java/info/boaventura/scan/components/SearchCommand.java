@@ -9,6 +9,8 @@ import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class SearchCommand implements CommandMarker {
 
@@ -18,13 +20,18 @@ public class SearchCommand implements CommandMarker {
 	@CliCommand(value = "search", help = "Search for entries in jar or zip files")
 	public String search(@CliOption(key = "") String pattern,
 											 @CliOption(key = "all") String all) {
-		StringBuffer sb = new StringBuffer("");
 		boolean matchAll = all != null;
-		for (ResultEntry resultEntry: result.match(pattern)) {
+		if (pattern == null && !matchAll) {
+			return "Oh, man... Please, show me some pattern, buddy. I sure that i'll show you matched results.";
+		}
+		StringBuffer sb = new StringBuffer("");
+		Set<ResultEntry> foundEntries = result.match(pattern);
+		for (ResultEntry resultEntry: foundEntries) {
 			if ((!matchAll && resultEntry.isClassEntry()) || matchAll) {
 				sb.append(resultEntry.toString(MainSetting.current) + "\n");
 			}
 		}
+		sb.append("\nThe search search for '" + pattern + "' has found " + foundEntries.size() + " matches");
 		return sb.toString();
 	}
 

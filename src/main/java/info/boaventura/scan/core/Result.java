@@ -13,6 +13,13 @@ import java.util.zip.ZipFile;
 public interface Result {
 
 	/**
+	 * Prepare for a new search.
+	 * Call this method before {@link #mount(File)}.
+	 * @see #mount(File)
+	 */
+	void setup();
+
+	/**
 	 * Do the tricks to mount a structure to be searched.
 	 * @return Any trick mounting result search
 	 * @throws IOException
@@ -21,8 +28,10 @@ public interface Result {
 
 	/**
 	 * Do the tricks to mount a structure to be searched, based on fileItem parameter.
+	 * Note: the method {@link #setup()} must be called before this method.
 	 * @param fileItem entry to mount a structure
 	 * @return Any trick mounting result search
+	 * @see #setup()
 	 * @throws IOException
 	 */
 	StringBuffer mount(File fileItem);

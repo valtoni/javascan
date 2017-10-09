@@ -13,7 +13,7 @@ public class MyPromptProvider extends DefaultPromptProvider {
   
   @Override
   public String getPrompt() {
-    return new AttributedString("SCAN>", AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW)).toAnsi();
+    return new AttributedString("SCAN> ", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)).toString();
   }
 
   @Override

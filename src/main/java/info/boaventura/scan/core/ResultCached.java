@@ -3,6 +3,7 @@ package info.boaventura.scan.core;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 
 /**
@@ -29,9 +30,10 @@ public class ResultCached implements Result {
 		setup();
 	}
 
-	private void setup() {
+	public void setup() {
 		dirs = 0;
 		availableFiles = new ArrayList<>();
+		cachedEntries = new TreeSet<>();
 	}
 
 	private boolean matchExtension(File file) {
@@ -45,6 +47,7 @@ public class ResultCached implements Result {
 
 	@Override
 	public StringBuffer mount() {
+		setup();
 		return mount(MainSetting.current.toFile());
 	}
 
@@ -61,9 +64,9 @@ public class ResultCached implements Result {
 					final ZipFile zipFile = new ZipFile(file);
 					files++;
 					availableFiles.add(zipFile);
-					cachedEntries = Collections.list(zipFile.entries()).stream()
+					cachedEntries.addAll(Collections.list(zipFile.entries()).stream()
 							.map(z -> new ResultEntry(zipFile, z))
-							.collect(CollectorSorted.toSortedSet());
+							.collect(CollectorSorted.toSortedSet()));
 				} catch (IOException e) {
 					result.append("Error accessing " + file.getName() + ": " + e.getMessage());
 				}
@@ -86,7 +89,9 @@ public class ResultCached implements Result {
 	 */
 	@Override
 	public Set<ResultEntry> match(String expression) {
-		return cachedEntries.subSet(new ResultEntry(expression), new ResultEntry(expression + new String(new char[20]).replace("\0", "x")));
+		return cachedEntries.stream()
+				.filter(re -> expression == null ? true : re.getZipEntry().getName().toLowerCase().contains(expression.toLowerCase()))
+				.collect(Collectors.toSet());
 	}
 
 }
