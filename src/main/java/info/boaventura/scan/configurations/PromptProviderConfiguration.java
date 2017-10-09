@@ -14,7 +14,7 @@ public class PromptProviderConfiguration {
 		return new PromptProvider() {
 
 			public String getPrompt() {
-				return new AttributedString("SCAN>", AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW)).toAnsi();
+				return new AttributedString("SCAN> ", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)).toString();
 			}
 
 			public String getProviderName() {
