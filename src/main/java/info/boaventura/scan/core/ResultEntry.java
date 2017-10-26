@@ -10,11 +10,13 @@ public class ResultEntry implements Comparable<ResultEntry> {
 	private Path path;
 	private ZipFile zipFile;
 	private ZipEntry zipEntry;
+	private String entry;
 
 	public ResultEntry(Path path, ZipFile zipFile, ZipEntry zipEntry) {
 		this.path = path;
 		this.zipFile = zipFile;
 		this.zipEntry = zipEntry;
+		this.entry = zipEntry.getName().replace("/", ".").replace(".class", "");
 	}
 
 	/**
@@ -33,6 +35,10 @@ public class ResultEntry implements Comparable<ResultEntry> {
 		return zipEntry;
 	}
 
+	public String getEntry() {
+		return entry;
+	}
+
 	@Override
 	public int compareTo(ResultEntry o) {
 		if (o == null) return -1;
@@ -42,10 +48,10 @@ public class ResultEntry implements Comparable<ResultEntry> {
 	@Override
 	public String toString() {
 		if (path.toString().equals(zipFile.getName())) {
-			return zipFile.getName() + ": " + zipEntry.getName().replace("/", ".");
+			return zipFile.getName() + ": " + entry;
 		}
 		else {
-			return path.relativize(Paths.get(zipFile.getName())) + ": " + zipEntry.getName().replace("/", ".");
+			return path.relativize(Paths.get(zipFile.getName())) + ": " + entry;
 		}
 	}
 

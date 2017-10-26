@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,16 +18,46 @@ public final class MainSetting {
 
 	public static Boolean mounted = false;
 
-	private static String expand(String variable) {
-		if (variable == null) return null;
-		else if (variable.startsWith("$")) {
-			return System.getenv(variable.substring(1));
+	private static final String START_VAR;
+	private static final String END_VAR;
+	private static final String REGEX_PATH_SEP;
+
+	static {
+		String os = System.getProperty("os.name").toLowerCase();
+		System.out.println(os);
+		if (os.indexOf("win") >= 0 && os.indexOf("cygwin") == -1) {
+			START_VAR = "%";
+			END_VAR = "%";
+			REGEX_PATH_SEP = "[,|;]";
 		}
-		return variable;
+		else {
+			START_VAR = "${";
+			END_VAR = "}";
+			REGEX_PATH_SEP = "[:]";
+		}
+	}
+
+	private static String expand(String startVar, String endVar, String item) {
+		if (item == null  || item.length() < startVar.length() + endVar.length()) return item;
+		int first = item.indexOf(startVar);
+		if (first < 0) return item;
+		int last = item.indexOf(endVar, startVar.length() + 1);
+		if (last < 0) return item;
+		String variable = item.substring(first + startVar.length(), last - endVar.length() + 1);
+		String value = System.getenv(variable);
+		System.out.println("Expanded variable <" + variable + "> to " + value);
+		return value;
+	}
+
+	private static String expand(String item) {
+		if (item.startsWith("$") && !item.startsWith("${")) {
+			return expand(START_VAR, END_VAR, START_VAR + item.substring(1) + END_VAR);
+		}
+		return expand(START_VAR, END_VAR, item);
 	}
 
 	public static void main(String[] args) {
-		addPath("$PATH");
+		addPath("$CLASSPATH");
 		for (Path i: indexedPaths) {
 			System.out.println(i.toString());
 		}
@@ -38,13 +67,22 @@ public final class MainSetting {
 		return indexedPaths;
 	}
 
+	private static boolean pathContains(String item) {
+		for (byte b: REGEX_PATH_SEP.getBytes()) {
+			if (item.contains("" + (char)b)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static synchronized void addPath(String tumblr) {
 		// Splits classpath, path env variables: "," or ";" or ":"
-		String[] items = tumblr.split("[,|;|:]");
+		String[] items = tumblr.split(REGEX_PATH_SEP);
 		String finalValue;
 		for (String item: items) {
 			finalValue = expand(item);
-			if (finalValue.contains(",") || finalValue.contains(";")) addPath(finalValue);
+			if (pathContains(finalValue)) addPath(finalValue);
 			else {
 				Path path = Paths.get(finalValue);
 				File file = path.toFile();

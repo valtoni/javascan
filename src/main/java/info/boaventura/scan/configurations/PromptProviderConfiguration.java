@@ -1,7 +1,6 @@
 package info.boaventura.scan.configurations;
 
-import org.jline.utils.AttributedString;
-import org.jline.utils.AttributedStyle;
+import info.boaventura.scan.Ansi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.shell.plugin.PromptProvider;
@@ -14,7 +13,8 @@ public class PromptProviderConfiguration {
 		return new PromptProvider() {
 
 			public String getPrompt() {
-				return new AttributedString("SCAN> ", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)).toString();
+				//return new AttributedString("SCAN> ", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE)).toString();
+				return new Ansi.Builder().cyan("SCAN> ").string();
 			}
 
 			public String getProviderName() {

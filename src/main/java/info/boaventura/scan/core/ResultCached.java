@@ -9,7 +9,7 @@ import java.util.zip.ZipFile;
 
 /**
  * Search for files with {@link #extensions} and, in startpoint file {@link MainSetting#current} do
- * a recursive search in {@link #mount()} to find matched file classes in each file.
+ * a recursive search in {@link #mount(File)} to find matched file classes in each file.
  *
  * The method {@link #mount(File)} can be called indicating another startpoint.
  *
@@ -89,7 +89,7 @@ public class ResultCached implements Result {
 	@Override
 	public Set<ResultEntry> match(String expression) {
 		return cachedEntries.stream()
-				.filter(re -> expression == null ? true : re.getZipEntry().getName().toLowerCase().contains(expression.toLowerCase()))
+				.filter(re -> expression == null ? true : re.getEntry().toLowerCase().contains(expression.toLowerCase()))
 				.collect(Collectors.toSet());
 	}
 
