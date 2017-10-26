@@ -2,6 +2,7 @@ package info.boaventura.scan.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
@@ -46,14 +47,11 @@ public class ResultCached implements Result {
 	}
 
 	@Override
-	public StringBuffer mount() {
-		setup();
-		return mount(MainSetting.current.toFile());
-	}
-
-	@Override
 	public StringBuffer mount(File fileItem) {
+		System.out.println("Mounting " + fileItem.getName() + "...");
 		StringBuffer result = new StringBuffer();
+		File[] fileList = fileItem.listFiles();
+		if (fileList == null) return new StringBuffer("No libraries available at " + fileItem.getName());
 		for (File file: fileItem.listFiles()) {
 			if (file.isDirectory()) {
 				dirs++;
@@ -65,8 +63,9 @@ public class ResultCached implements Result {
 					files++;
 					availableFiles.add(zipFile);
 					cachedEntries.addAll(Collections.list(zipFile.entries()).stream()
-							.map(z -> new ResultEntry(zipFile, z))
+							.map(z -> new ResultEntry(file.toPath(), zipFile, z))
 							.collect(CollectorSorted.toSortedSet()));
+					System.out.println("Added library " + zipFile.getName());
 				} catch (IOException e) {
 					result.append("Error accessing " + file.getName() + ": " + e.getMessage());
 				}

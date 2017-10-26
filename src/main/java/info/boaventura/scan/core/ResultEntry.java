@@ -7,10 +7,12 @@ import java.util.zip.ZipFile;
 
 public class ResultEntry implements Comparable<ResultEntry> {
 
+	private Path path;
 	private ZipFile zipFile;
 	private ZipEntry zipEntry;
 
-	public ResultEntry(ZipFile zipFile, ZipEntry zipEntry) {
+	public ResultEntry(Path path, ZipFile zipFile, ZipEntry zipEntry) {
+		this.path = path;
 		this.zipFile = zipFile;
 		this.zipEntry = zipEntry;
 	}
@@ -39,11 +41,12 @@ public class ResultEntry implements Comparable<ResultEntry> {
 
 	@Override
 	public String toString() {
-		return zipFile.getName() + ": " + zipEntry.getName();
-	}
-
-	public String toString(Path path) {
-		return path.relativize(Paths.get(zipFile.getName())) + ": " + zipEntry.getName();
+		if (path.toString().equals(zipFile.getName())) {
+			return zipFile.getName() + ": " + zipEntry.getName().replace("/", ".");
+		}
+		else {
+			return path.relativize(Paths.get(zipFile.getName())) + ": " + zipEntry.getName().replace("/", ".");
+		}
 	}
 
 	public boolean isClassEntry() {
