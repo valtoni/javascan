@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>info.boaventura</groupId>
@@ -18,17 +18,17 @@
   <url>http://javascan.github.io</url>
 
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-		<version>5.1.6.RELEASE</version>            
-		<type>pom</type>
-		<scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-framework-bom</artifactId>
+        <version>5.2.2.RELEASE</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 
   <dependencies>
@@ -201,7 +201,9 @@
           <execution>
             <id>l4j-clui</id>
             <phase>verify</phase>
-            <goals><goal>launch4j</goal></goals>
+            <goals>
+              <goal>launch4j</goal>
+            </goals>
             <configuration>
               <headerType>console</headerType>
               <outfile>${izpack.staging}/${project.artifactId}.exe</outfile>
@@ -243,7 +245,9 @@
           <execution>
             <id>izpack-create-setup</id>
             <phase>verify</phase>
-            <goals><goal>izpack</goal></goals>
+            <goals>
+              <goal>izpack</goal>
+            </goals>
             <configuration>
               <!-- base for relative paths in izpack descriptor -->
               <baseDir>${izpack.staging}</baseDir>

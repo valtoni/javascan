@@ -46,30 +46,42 @@ public class ResultCached implements Result {
 		return false;
 	}
 
+	private String addFile(File file) {
+		if (matchExtension(file)) {
+			try {
+				final ZipFile zipFile = new ZipFile(file);
+				files++;
+				availableFiles.add(zipFile);
+				cachedEntries.addAll(Collections.list(zipFile.entries()).stream()
+						.map(z -> new ResultEntry(file.toPath(), zipFile, z))
+						.collect(CollectorSorted.toSortedSet()));
+				return "Added library " + zipFile.getName();
+			} catch (IOException e) {
+				return "Error accessing " + file.getName() + ": " + e.getMessage();
+			}
+		}
+		return "";
+	}
+
 	@Override
 	public StringBuffer mount(File fileItem) {
-		System.out.println("Mounting " + fileItem.getName() + "...");
 		StringBuffer result = new StringBuffer();
-		File[] fileList = fileItem.listFiles();
-		if (fileList == null) return new StringBuffer("No libraries available at " + fileItem.getName());
-		for (File file: fileItem.listFiles()) {
-			if (file.isDirectory()) {
-				dirs++;
-				mount(file);
-			}
-			else if (matchExtension(file)) {
-				try {
-					final ZipFile zipFile = new ZipFile(file);
-					files++;
-					availableFiles.add(zipFile);
-					cachedEntries.addAll(Collections.list(zipFile.entries()).stream()
-							.map(z -> new ResultEntry(file.toPath(), zipFile, z))
-							.collect(CollectorSorted.toSortedSet()));
-					System.out.println("Added library " + zipFile.getName());
-				} catch (IOException e) {
-					result.append("Error accessing " + file.getName() + ": " + e.getMessage());
+		if (fileItem.isDirectory()) {
+			System.out.println("Mounting " + fileItem.getName() + "...");
+			File[] fileList = fileItem.listFiles();
+			if (fileList == null) return new StringBuffer("No libraries available at " + fileItem.getName());
+			for (File file: fileItem.listFiles()) {
+				if (file.isDirectory()) {
+					dirs++;
+					mount(file);
+				}
+				else {
+					result.append(addFile(file));
 				}
 			}
+		}
+		else {
+			result.append(addFile(fileItem));
 		}
 		return result;
 	}
