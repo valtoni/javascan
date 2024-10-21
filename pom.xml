@@ -51,7 +51,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>6.0.2.Final</version>
+      <version>6.2.5.Final</version>
     </dependency>
 
     <!-- Spring bioma -->
@@ -157,12 +157,10 @@
                     <Build-Number>${project.version}</Build-Number>
                   </manifestEntries>
                 </transformer>
-                <transformer
-                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                   <resource>META-INF/spring.handlers</resource>
                 </transformer>
-                <transformer
-                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                   <resource>META-INF/spring.schemas</resource>
                 </transformer>
               </transformers>
