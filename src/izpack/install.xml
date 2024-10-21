@@ -7,7 +7,7 @@
     <appname>javascan</appname>
     <appversion>1.0.0.0</appversion>
     <appsubpath>javascan</appsubpath>
-    <javaversion>1.8</javaversion>
+    <javaversion>22</javaversion>
   </info>
 
   <locale>

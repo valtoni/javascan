@@ -3,14 +3,13 @@ package info.boaventura.scan.core;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipFile;
 
 /**
- * Data search structure to entries of type {@link ResultEntry}.
+ * Data search structure to entries of type {@link ItemResult}.
  */
-public interface Result {
+public interface DataSearchManager {
 
 	/**
 	 * Prepare for a new search.
@@ -36,12 +35,12 @@ public interface Result {
 	Collection<ZipFile> getIndexedFiles();
 
 	/**
-	 * Match expression, returning the {@link Set} of matched {@link ResultEntry} instances.
+	 * Match expression, returning the {@link Set} of matched {@link ItemResult} instances.
 	 *
 	 * @param expression
 	 * @return Matched entries
-	 * @see ResultCached#match(String)
+	 * @see DataSearchManagerCached#match(String)
 	 */
-	Set<ResultEntry> match(String expression);
+	Set<ItemResult> match(String expression);
 
 }

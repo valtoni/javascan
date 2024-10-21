@@ -5,26 +5,18 @@ import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ResultEntry implements Comparable<ResultEntry> {
+public class ItemResult implements Comparable<ItemResult> {
 
-	private Path path;
-	private ZipFile zipFile;
-	private ZipEntry zipEntry;
-	private String entry;
+	private final Path path;
+	private final ZipFile zipFile;
+	private final ZipEntry zipEntry;
+	private final String entry;
 
-	public ResultEntry(Path path, ZipFile zipFile, ZipEntry zipEntry) {
+	public ItemResult(Path path, ZipFile zipFile, ZipEntry zipEntry) {
 		this.path = path;
 		this.zipFile = zipFile;
 		this.zipEntry = zipEntry;
 		this.entry = zipEntry.getName().replace("/", ".").replace(".class", "");
-	}
-
-	/**
-	 * Fake entry to be used in {@link ResultCached#match(String)}
-	 * @param name
-	 */
-	ResultEntry(String name) {
-		zipEntry = new ZipEntry(name);
 	}
 
 	public ZipFile getZipFile() {
@@ -40,7 +32,7 @@ public class ResultEntry implements Comparable<ResultEntry> {
 	}
 
 	@Override
-	public int compareTo(ResultEntry o) {
+	public int compareTo(ItemResult o) {
 		if (o == null) return -1;
 		return zipEntry.getName().compareTo(o.getZipEntry().getName());
 	}

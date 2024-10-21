@@ -1,44 +1,41 @@
 package info.boaventura.scan.components;
 
-import info.boaventura.scan.core.MainSetting;
-import info.boaventura.scan.core.Result;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.shell.core.CommandMarker;
-import org.springframework.shell.core.annotation.CliCommand;
-import org.springframework.shell.core.annotation.CliOption;
+import info.boaventura.scan.core.PathHandler;
+import info.boaventura.scan.core.DataSearchManager;
+import org.springframework.shell.command.annotation.Command;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.zip.ZipFile;
 
 @Component
-public class SystemCommand implements CommandMarker {
+public class SystemCommand {
 
-	@Autowired
-	Result result;
+	DataSearchManager dataSearchManager;
+	PathHandler pathHandler;
 
-	@CliCommand(value = "entries", help = "List entries currently indexed")
-	public String entries(@CliOption(key = "") String title,
-												@CliOption(key = "verbose") Boolean verbose) {
-		if (!MainSetting.mounted) return "Index was not mounted (use mount first)";
-		StringBuffer sb = new StringBuffer();
+	public SystemCommand(DataSearchManager dataSearchManager, PathHandler pathHandler) {
+		this.dataSearchManager = dataSearchManager;
+		this.pathHandler = pathHandler;
+	}
 
-		for (Path path: MainSetting.getPaths()) {
-			sb.append("Available Files at " + path.toAbsolutePath() + ": \n");
-			Collection<ZipFile> files = result.getIndexedFiles();
+	@Command(command = "entries", description = "List entries currently indexed")
+	public String entries() {
+		StringBuilder sb = new StringBuilder();
+		for (Path path: pathHandler.getPaths()) {
+			sb.append("Available Files at ").append(path.toAbsolutePath()).append(": \n");
+			Collection<ZipFile> files = dataSearchManager.getIndexedFiles();
 			for (ZipFile entry: files) {
-				sb.append("- " + path.relativize(Paths.get(entry.getName())).toString());
+				sb.append("- ").append(path.relativize(Paths.get(entry.getName())).toString());
 				if (entry.getComment() != null) {
-					sb.append(" /* " + entry.getComment() + " */");
+					sb.append(" /* ").append(entry.getComment()).append(" */");
 				}
 				sb.append("\n");
 			}
-			sb.append("\n" + files.size() + " entries available.\n");
+			sb.append("\n").append(files.size()).append(" entries available.\n");
 		}
-
 		return sb.toString();
 	}
 

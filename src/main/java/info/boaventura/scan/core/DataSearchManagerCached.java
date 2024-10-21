@@ -1,21 +1,27 @@
 package info.boaventura.scan.core;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.Collections;
+import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 
 /**
- * Search for files with {@link #extensions} and, in startpoint file {@link MainSetting#current} do
+ * Search for files with {@link #extensions} and, in startpoint file {@link PathHandlerTokenized#current} do
  * a recursive search in {@link #mount(File)} to find matched file classes in each file.
- *
  * The method {@link #mount(File)} can be called indicating another startpoint.
  *
  * @author Valtoni Boaventura - valtoni@gmail.com
  */
-public class ResultCached implements Result {
+public class DataSearchManagerCached implements DataSearchManager {
 
 	int dirs = 0;
 	int files = 0;
@@ -25,9 +31,9 @@ public class ResultCached implements Result {
 
 	/** A jar file is a zipfile too, than, we can treat in one type only **/
 	List<ZipFile> availableFiles;
-	SortedSet<ResultEntry> cachedEntries;
+	SortedSet<ItemResult> cachedEntries;
 
-	public ResultCached() {
+	public DataSearchManagerCached() {
 		setup();
 	}
 
@@ -53,7 +59,7 @@ public class ResultCached implements Result {
 				files++;
 				availableFiles.add(zipFile);
 				cachedEntries.addAll(Collections.list(zipFile.entries()).stream()
-						.map(z -> new ResultEntry(file.toPath(), zipFile, z))
+						.map(z -> new ItemResult(file.toPath(), zipFile, z))
 						.collect(CollectorSorted.toSortedSet()));
 				return "Added library " + zipFile.getName();
 			} catch (IOException e) {
@@ -64,7 +70,7 @@ public class ResultCached implements Result {
 	}
 
 	@Override
-	public StringBuffer mount(File fileItem) {
+	public StringBuffer mount(@NotNull File fileItem) {
 		StringBuffer result = new StringBuffer();
 		if (fileItem.isDirectory()) {
 			System.out.println("Mounting " + fileItem.getName() + "...");
@@ -99,9 +105,9 @@ public class ResultCached implements Result {
 	 * @return a set containing matched expression
 	 */
 	@Override
-	public Set<ResultEntry> match(String expression) {
+	public Set<ItemResult> match(String expression) {
 		return cachedEntries.stream()
-				.filter(re -> expression == null ? true : re.getEntry().toLowerCase().contains(expression.toLowerCase()))
+				.filter(re -> expression == null || re.getEntry().toLowerCase().contains(expression.toLowerCase()))
 				.collect(Collectors.toSet());
 	}
 

@@ -5,25 +5,42 @@
   <groupId>info.boaventura</groupId>
   <artifactId>javascan</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
 
   <properties>
-    <java.version>1.8</java.version>
+    <java.version>22</java.version>
+    <spring-shell.version>3.3.3</spring-shell.version>
+    <spring-boot.version>6.1.14</spring-boot.version>
+    <spring-boot-starter.version>3.3.4</spring-boot-starter.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <izpack.version>5.0.9</izpack.version>
+    <izpack.version>5.2.3</izpack.version>
     <izpack.staging>${project.build.directory}/staging</izpack.staging>
   </properties>
 
   <name>javascan</name>
-  <url>http://javascan.github.io</url>
+  <url>https://javascan.github.io</url>
 
 
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.springframework.shell</groupId>
+        <artifactId>spring-shell-dependencies</artifactId>
+        <version>${spring-shell.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-framework-bom</artifactId>
-        <version>5.2.2.RELEASE</version>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>5.11.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -32,27 +49,38 @@
 
 
   <dependencies>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.22</version>
-    </dependency>
     <dependency>
       <groupId>org.jline</groupId>
       <artifactId>jline</artifactId>
-      <version>3.3.1</version>
+      <version>3.27.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>${spring-boot-starter.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
+      <version>${spring-boot-starter.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.shell</groupId>
-      <artifactId>spring-shell</artifactId>
-      <version>1.2.0.RELEASE</version>
+      <artifactId>spring-shell-starter</artifactId>
+      <version>${spring-shell.version}</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>6.0.2.Final</version>
+      <version>9.0.0.Beta3</version>
     </dependency>
+
 
     <!-- Spring bioma -->
     <dependency>
@@ -84,26 +112,27 @@
       <artifactId>spring-tx</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.el</groupId>
-      <artifactId>javax.el-api</artifactId>
-      <version>3.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.el</artifactId>
-      <version>3.0.0</version>
+      <groupId>net.objecthunter</groupId>
+      <artifactId>exp4j</artifactId>
+      <version>0.4.8</version>
     </dependency>
 
     <!-- New Juniper -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.0.1</version>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.9.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>5.9.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -112,25 +141,35 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.0</version>
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <compilerVersion>${java.version}</compilerVersion>
+          <!-- https://openjdk.org/jeps/451 -->
+          <argLine>-Xshare:off -XX:+EnableDynamicAgentLoading</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>${java.version}</release>
+          <!-- https://issues.apache.org/jira/browse/MCOMPILER-548 -->
+          <compilerArgs>
+            <arg>-proc:full</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.5</version>
+        <version>3.4.2</version>
         <configuration>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
               <useUniqueVersions>false</useUniqueVersions>
               <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>info.boaventura.scan.Main</mainClass>
+              <mainClass>info.boaventura.scan.JavaScanResources</mainClass>
             </manifest>
             <manifestEntries>
               <version>${project.version}</version>
@@ -141,7 +180,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -153,7 +192,7 @@
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
-                    <Main-Class>info.boaventura.scan.Main</Main-Class>
+                    <Main-Class>info.boaventura.scan.JavaScanResources</Main-Class>
                     <Build-Number>${project.version}</Build-Number>
                   </manifestEntries>
                 </transformer>
@@ -196,7 +235,7 @@
       <plugin>
         <groupId>com.akathist.maven.plugins.launch4j</groupId>
         <artifactId>launch4j-maven-plugin</artifactId>
-        <version>1.7.21</version>
+        <version>2.5.2</version>
         <executions>
           <execution>
             <id>l4j-clui</id>
@@ -210,7 +249,7 @@
               <jar>${project.build.directory}/${project.build.finalName}.${project.packaging}</jar>
               <errTitle>${project.name}</errTitle>
               <classPath>
-                <mainClass>info.boaventura.scan.Main</mainClass>
+                <mainClass>info.boaventura.scan.JavaScanResources</mainClass>
                 <addDependencies>false</addDependencies>
                 <preCp>anything</preCp>
               </classPath>

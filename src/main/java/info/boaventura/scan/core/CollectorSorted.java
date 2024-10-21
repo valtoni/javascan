@@ -71,8 +71,8 @@ public class CollectorSorted<T, A, R> implements Collector<T, A, R> {
 
 	/**
 	 * SortedSet collector, based in {@link Collectors#toSet()}
-	 * @param <T>
-	 * @return
+	 * @param <T> Typed type
+	 * @return a collector sorted
 	 */
 	public static <T> Collector<T, ?, SortedSet<T>> toSortedSet() {
 		return new CollectorSorted<>((Supplier<TreeSet<T>>) TreeSet::new, SortedSet::add,
