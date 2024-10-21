@@ -36,7 +36,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.22</version>
+      <version>1.7.36</version>
     </dependency>
     <dependency>
       <groupId>org.jline</groupId>
@@ -157,12 +157,10 @@
                     <Build-Number>${project.version}</Build-Number>
                   </manifestEntries>
                 </transformer>
-                <transformer
-                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                   <resource>META-INF/spring.handlers</resource>
                 </transformer>
-                <transformer
-                    implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                   <resource>META-INF/spring.schemas</resource>
                 </transformer>
               </transformers>
