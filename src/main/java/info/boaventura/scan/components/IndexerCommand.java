@@ -1,26 +1,32 @@
 package info.boaventura.scan.components;
 
-import info.boaventura.scan.core.PathHandler;
+import info.boaventura.scan.core.handlers.PathHandler;
 import info.boaventura.scan.core.DataSearchManager;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.shell.Availability;
 import org.springframework.shell.AvailabilityProvider;
 import org.springframework.shell.command.annotation.Command;
+import org.springframework.shell.command.annotation.Option;
 import org.springframework.shell.command.annotation.CommandAvailability;
-import org.springframework.stereotype.Component;
+import org.springframework.shell.command.annotation.Option;
+import org.springframework.shell.standard.ShellOption;
+import org.springframework.validation.annotation.Validated;
 
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.zip.ZipFile;
 
-@Component
+import static org.springframework.shell.command.CommandRegistration.OptionArity.EXACTLY_ONE;
+
+@Validated
 @Command(command = "index")
-public class Indexer {
+public class IndexerCommand {
 
 	DataSearchManager result;
 	PathHandler pathHandler;
 
-	public Indexer(DataSearchManager dataSearchManager, PathHandler pathHandler) {
+	public IndexerCommand(DataSearchManager dataSearchManager, PathHandler pathHandler) {
 		this.result = dataSearchManager;
 		this.pathHandler = pathHandler;
 	}
@@ -59,7 +65,11 @@ public class Indexer {
 	}
 
 	@Command(command = "add", description = "Add item to be indexed")
-	public String add(String item) {
+	public String add(
+			@NotEmpty(message = "You must inform a pattern to be included (can be environment variables)")
+			@Option(longNames = "pattern", description = "Path value (can be environment variables)")
+			String item
+		) {
 		pathHandler.addPath(item);
 		return "Added directories to search";
 	}

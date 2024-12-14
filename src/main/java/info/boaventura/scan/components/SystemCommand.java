@@ -1,6 +1,6 @@
 package info.boaventura.scan.components;
 
-import info.boaventura.scan.core.PathHandler;
+import info.boaventura.scan.core.handlers.PathHandler;
 import info.boaventura.scan.core.DataSearchManager;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.stereotype.Component;

@@ -1,11 +1,11 @@
 package info.boaventura.scan.core;
 
+import info.boaventura.scan.core.handlers.PathHandler;
 import info.boaventura.scan.core.variables.VariableExpanderEnvironment;
 import info.boaventura.scan.core.variables.VariableStyle;
 import info.boaventura.scan.core.variables.VariableStyleBash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * Path handler.
  */
-@Component
 public class PathHandlerTokenized implements PathHandler {
 
 	private final Logger log = LoggerFactory.getLogger(PathHandlerTokenized.class);

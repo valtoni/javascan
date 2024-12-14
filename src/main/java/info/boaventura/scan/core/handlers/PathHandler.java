@@ -1,4 +1,4 @@
-package info.boaventura.scan.core;
+package info.boaventura.scan.core.handlers;
 
 import java.nio.file.Path;
 import java.util.List;

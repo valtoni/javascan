@@ -1,0 +1,13 @@
+logging:
+  level:
+    org.jline: DEBUG
+    org.springframework: INFO
+    guru.springframework.controllers: DEBUG
+    org.hibernate: WARN
+    org: INFO
+spring:
+  shell:
+    interactive:
+      enabled: true
+    script:
+      enabled: true
