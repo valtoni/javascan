@@ -1,5 +1,8 @@
 package info.boaventura.scan.core.variables;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class VariableStyleBash implements VariableStyle {
 
     private static final String START_VAR = "${";

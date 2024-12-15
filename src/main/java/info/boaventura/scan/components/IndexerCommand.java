@@ -70,8 +70,14 @@ public class IndexerCommand {
 			@Option(longNames = "pattern", description = "Path value (can be environment variables)")
 			String item
 		) {
-		pathHandler.addPath(item);
-		return "Added directories to search";
+		if (item.equalsIgnoreCase("maven")) {
+			pathHandler.addPath("${user.home}/.m2/repository");
+			return "Added maven repository to search";
+		}
+		else {
+			pathHandler.addPath(item);
+			return "Added directories to search";
+		}
 	}
 
 	@Command(command = "clean", description = "Clean index")

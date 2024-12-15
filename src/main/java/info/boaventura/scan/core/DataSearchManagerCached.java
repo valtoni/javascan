@@ -69,10 +69,41 @@ public class DataSearchManagerCached implements DataSearchManager {
 		return "";
 	}
 
+	/**
+	 * A set of directory names that are ignored during the scanning or searching process.
+	 * These directories typically contain files or structures that are not relevant
+	 * to the operations being performed, such as version control directories,
+	 * build output directories, or other temporary directories.
+	 * Example ignored directories include:
+	 * - `.git`: Git version control directory
+	 * - `node_modules`: Directory for Node.js project dependencies
+	 * - `target`: Maven build output directory
+	 * - `.svn`: Subversion version control directory
+	 * - `.hg`: Mercurial version control directory
+	 * - `p4root`: Perforce workspace roots
+	 * - `.bzr`: Bazaar version control directory
+	 * - `.gitmodules`: Git submodules configuration file
+	 */
+	private final Set<String> ignoredDirectories = Set.of(".git", "node_modules", "target", ".svn", ".hg", "p4root", ".bzr", ".gitmodules");
+
+	/**
+	 * Determines if a given file should be ignored based on its name matching
+	 * any entry in the list of ignored directories.
+	 *
+	 * @param file The file to be checked.
+	 * @return true if the file's name matches any ignored directory name; false otherwise.
+	 */
+	private boolean toIgnore(File file) {
+		return ignoredDirectories.stream()
+				.anyMatch(ignored -> file.getName().toLowerCase()
+						.contains(ignored));
+	}
+
+
 	@Override
 	public StringBuffer mount(@NotNull File fileItem) {
 		StringBuffer result = new StringBuffer();
-		if (fileItem.isDirectory()) {
+		if (fileItem.isDirectory() && !toIgnore(fileItem)) {
 			System.out.println("Mounting " + fileItem.getName() + "...");
 			File[] fileList = fileItem.listFiles();
 			if (fileList == null) return new StringBuffer("No libraries available at " + fileItem.getName());

@@ -1,4 +1,4 @@
-package info.boaventura.scan.core;
+package info.boaventura.scan.core.handlers;
 
 import info.boaventura.scan.core.handlers.PathHandler;
 import info.boaventura.scan.core.variables.VariableExpanderEnvironment;
@@ -6,6 +6,8 @@ import info.boaventura.scan.core.variables.VariableStyle;
 import info.boaventura.scan.core.variables.VariableStyleBash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.shell.command.CommandRegistration;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -16,6 +18,7 @@ import java.util.List;
 /**
  * Path handler.
  */
+@Component
 public class PathHandlerTokenized implements PathHandler {
 
 	private final Logger log = LoggerFactory.getLogger(PathHandlerTokenized.class);
@@ -26,7 +29,7 @@ public class PathHandlerTokenized implements PathHandler {
 
 	private static final String REGEX_PATH_SEP = File.pathSeparator;
 
-	private VariableStyle variableStyle = new VariableStyleBash(new VariableExpanderEnvironment());
+	private final VariableStyle variableStyle;
 
 	public List<Path> getPaths() {
 		return indexedPaths;
@@ -39,6 +42,10 @@ public class PathHandlerTokenized implements PathHandler {
 			}
 		}
 		return false;
+	}
+
+	public PathHandlerTokenized(VariableStyle variableStyle) {
+		this.variableStyle = variableStyle;
 	}
 
 	public void addPath(String tumblr) {
@@ -86,7 +93,7 @@ public class PathHandlerTokenized implements PathHandler {
 	}
 
 	public boolean isReady() {
-		return indexedPaths.isEmpty();
+		return !indexedPaths.isEmpty();
 	}
 
 }

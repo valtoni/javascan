@@ -1,9 +1,14 @@
 package info.boaventura.scan.core;
 
+import org.jline.utils.AttributedStringBuilder;
+import org.jline.utils.AttributedStyle;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static org.jline.utils.AttributedStyle.*;
 
 public class ItemResult implements Comparable<ItemResult> {
 
@@ -45,6 +50,15 @@ public class ItemResult implements Comparable<ItemResult> {
 		else {
 			return path.relativize(Paths.get(zipFile.getName())) + ": " + entry;
 		}
+	}
+
+	public String toAnsiString() {
+		return new AttributedStringBuilder()
+				.append("Path: ", DEFAULT.foreground(CYAN)).append(path.toString(), DEFAULT.foreground(BLUE)).append("\n")
+				.append("File: ", DEFAULT.foreground(CYAN)).append(zipFile.getName(), DEFAULT.foreground(BLUE)).append("\n")
+				.append("Internal: ", DEFAULT.foreground(CYAN)).append(zipEntry.getName() + "/" + zipEntry.getTime(), DEFAULT.foreground(BLUE)).append("\n")
+				.append("Entry: ", DEFAULT.foreground(CYAN)).append(entry, DEFAULT.foreground(BLUE)).append("\n")
+				.toAnsi();
 	}
 
 	public boolean isClassEntry() {

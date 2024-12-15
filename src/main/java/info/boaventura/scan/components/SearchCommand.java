@@ -15,11 +15,9 @@ import java.util.Set;
 public class SearchCommand {
 
 	DataSearchManager dataSearchManager;
-	IndexerCommand indexerCommand;
 
-	public SearchCommand(DataSearchManager dataSearchManager, IndexerCommand indexerCommand) {
+	public SearchCommand(DataSearchManager dataSearchManager) {
 		this.dataSearchManager = dataSearchManager;
-		this.indexerCommand = indexerCommand;
 	}
 
 	@ShellMethod(key = "search", value = "Search for entries in jar or zip files")
@@ -32,10 +30,11 @@ public class SearchCommand {
 		Set<ItemResult> foundEntries = dataSearchManager.match(pattern);
 		for (ItemResult itemResult : foundEntries) {
 			if (itemResult.isClassEntry()) {
-				sb.append(itemResult).append("\n");
+				sb.append(itemResult.toAnsiString()).append("\n");
 			}
 		}
-		sb.append("\nThe search for '").append(pattern).append("' has found ").append(foundEntries.size()).append(" matches");
+		sb.append("\nThe search for '").append(pattern)
+				.append("' has found ").append(foundEntries.size()).append(" matches\n");
 		return sb.toString();
 	}
 
