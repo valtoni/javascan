@@ -1,18 +1,11 @@
 package info.boaventura.scan.core;
 
-import info.boaventura.scan.core.variables.VariableExpander;
-import info.boaventura.scan.core.variables.VariableExpanderEnvironment;
+import info.boaventura.scan.core.handlers.PathHandlerTokenized;
 import info.boaventura.scan.core.variables.VariableStyle;
-import info.boaventura.scan.core.variables.VariableStyleBash;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import info.boaventura.scan.core.PathHandlerTokenized;
 
 import java.nio.file.Path;
 
