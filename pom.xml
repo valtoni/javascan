@@ -20,6 +20,9 @@
   <name>javascan</name>
   <url>https://javascan.github.io</url>
 
+  <scm>
+    <developerConnection>scm:git:https://github.com/valtoni/javascan</developerConnection>
+  </scm>
 
   <dependencyManagement>
     <dependencies>
