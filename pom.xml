@@ -10,7 +10,7 @@
     <java.version>22</java.version>
     <spring-shell.version>3.4.0</spring-shell.version>
     <spring-boot.version>6.2.0</spring-boot.version>
-    <spring-boot-starter.version>3.4.2</spring-boot-starter.version>
+    <spring-boot-starter.version>3.4.3</spring-boot-starter.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <izpack.version>5.2.3</izpack.version>
     <izpack.staging>${project.build.directory}/staging</izpack.staging>
