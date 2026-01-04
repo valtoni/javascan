@@ -8,7 +8,7 @@
 
   <properties>
     <java.version>22</java.version>
-    <spring-shell.version>3.4.0</spring-shell.version>
+    <spring-shell.version>4.0.0</spring-shell.version>
     <spring-boot.version>6.2.0</spring-boot.version>
     <spring-boot-starter.version>3.4.4</spring-boot-starter.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
